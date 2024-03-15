@@ -1,35 +1,85 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
+import { useState, useEffect } from 'react';
+import { Container, Form, Row, Col, Button, Card } from 'react-bootstrap';
+import { FaRegPaperPlane, FaEllipsisH } from "react-icons/fa";
+import "bootstrap/dist/css/bootstrap.min.css";
 import './App.css'
+import axios from 'axios';
 
 function App() {
-  const [count, setCount] = useState(0)
+
+  const [post, setPost] = useState('');
+  const [posts, setPosts] = useState([]);
+
+  const fetchPosts = async () => {
+    const result = await axios.get('http://localhost:8000/api/posts');
+    setPosts(result.data);
+  };
+
+  useEffect(() => {
+    fetchPosts();
+  }, []);
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    await axios.post('http://localhost:8000/api/posts', { post });
+    setPost('');
+    fetchPosts();
+  };
 
   return (
     <>
-      <div>
-        <a href="https://vitejs.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.jsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
+      <Container>
+        <div className="instructions-container">
+          <Card>
+            <Card.Body>
+              To italicize, use <span className="alert-icons">*</span> at the
+              front and the back of the text you want to italicize. To bold, use{" "}
+              <span className="alert-icons">**</span> at the front and the back
+              of the text. To bold and italicize, use{" "}
+              <span className="alert-icons">***</span> at the front and the back
+              of the text. To strikethrough, use{" "}
+              <span className="alert-icons">~~</span> at the front and the back
+              of the text.
+            </Card.Body>
+          </Card>
+        </div>
+        <div className="input-field-container">
+          <Form onSubmit={handleSubmit}>
+            <Row>
+              <Col xs={10}>
+                <Form.Control
+                  as="textarea"
+                  value={post}
+                  onChange={(e) => setPost(e.target.value)}
+                ></Form.Control>
+                <Form.Text className="text-muted input-clue">
+                  Click the{" "}
+                  <span>
+                    <FaRegPaperPlane />
+                  </span>{" "}
+                  or hit the <span>Enter</span> key.
+                </Form.Text>
+              </Col>
+              <Col className="remove-padding" xs={2}>
+                <Button type="submit" className='submit-btn '>
+                  <FaRegPaperPlane />
+                </Button>
+              </Col>
+            </Row>
+          </Form>
+        </div>
+
+        <div className="post-container">
+          {posts.map((posts) => (
+            <Card className="post-item" key={posts.id}>
+              <Button className='post-button-holder'><FaEllipsisH /></Button>
+              <p>{posts.post}</p>
+          </Card>
+          ))}
+        </div>
+      </Container>
     </>
-  )
+  );
 }
 
 export default App
