@@ -18,7 +18,7 @@
 
 ### Screenshot
 
-![](public/assets/todo-list-preview.png)
+![](public/assets/textarea-preview.png)
 
 ## My process
 
@@ -29,12 +29,14 @@
 
 ### What I learned
 
-- CRUD in Laravel
+- CRUD in Laravel using RESTful API
 - Eloquent Model in Laravel
+- HTML Markups using React Markups
 
 ### Continued development
 
-- To create a toggle checked state that can be stored inside the table. 
+- To include markups that could provide hidden-spoiler for users to use.
+- To include pagination 
 
 ## Author
 
