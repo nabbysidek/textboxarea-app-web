@@ -1,6 +1,8 @@
 import { useState, useEffect } from 'react';
-import { Container, Form, Row, Col, Button, Card } from 'react-bootstrap';
+import { Container, Form, Row, Col, Button, Card, Dropdown } from 'react-bootstrap';
 import { FaRegPaperPlane, FaEllipsisH } from "react-icons/fa";
+import ReactMarkdown from 'react-markdown';
+import remarkGfm from 'remark-gfm';
 import "bootstrap/dist/css/bootstrap.min.css";
 import './App.css'
 import axios from 'axios';
@@ -9,6 +11,7 @@ function App() {
 
   const [post, setPost] = useState('');
   const [posts, setPosts] = useState([]);
+  const [showDropdown, setShowDropdown] = useState(false);
 
   const fetchPosts = async () => {
     const result = await axios.get('http://localhost:8000/api/posts');
@@ -24,6 +27,17 @@ function App() {
     await axios.post('http://localhost:8000/api/posts', { post });
     setPost('');
     fetchPosts();
+  };
+
+  const handleKeyPress =(e) => {
+    if (e.key === 'Enter' && !e.shiftKey) {
+      e.preventDefault(); // prevent form submission
+      handleSubmit(e);
+    }
+  };
+
+  const toggleDropdown = () => {
+    setShowDropdown(!showDropdown);
   };
 
   return (
@@ -51,17 +65,19 @@ function App() {
                   as="textarea"
                   value={post}
                   onChange={(e) => setPost(e.target.value)}
+                  onKeyPress={handleKeyPress}
                 ></Form.Control>
                 <Form.Text className="text-muted input-clue">
                   Click the{" "}
                   <span>
                     <FaRegPaperPlane />
                   </span>{" "}
-                  or hit the <span>Enter</span> key.
+                  or hit the <span>Enter</span> key. To create a new line, hit
+                  Shift + Enter keys.
                 </Form.Text>
               </Col>
               <Col className="remove-padding" xs={2}>
-                <Button type="submit" className='submit-btn '>
+                <Button type="submit" className="submit-btn ">
                   <FaRegPaperPlane />
                 </Button>
               </Col>
@@ -72,9 +88,22 @@ function App() {
         <div className="post-container">
           {posts.map((posts) => (
             <Card className="post-item" key={posts.id}>
-              <Button className='post-button-holder'><FaEllipsisH /></Button>
-              <p>{posts.post}</p>
-          </Card>
+              <Dropdown show={showDropdown} onClick={toggleDropdown} className='custom-dropwdown'>
+                <Dropdown.Toggle className="post-button-holder">
+                  <FaEllipsisH />
+                </Dropdown.Toggle>
+                <Dropdown.Menu>
+                  <Dropdown.Item>Edit</Dropdown.Item>
+                  <Dropdown.Item>Delete</Dropdown.Item>
+                </Dropdown.Menu>
+              </Dropdown>
+              <ReactMarkdown
+                remarkPlugins={[remarkGfm]}
+                className="show-details"
+              >
+                {posts.post}
+              </ReactMarkdown>
+            </Card>
           ))}
         </div>
       </Container>

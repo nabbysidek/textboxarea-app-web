@@ -26,7 +26,12 @@
 
 textarea {
   resize: none;
-  overflow-y: hidden;
+  /* overflow-y: hidden; */
+}
+
+blockquote {
+  border-left: 4px solid #ccc; 
+  padding-left: 10px; 
 }
 
 .alert-icons {
@@ -45,12 +50,23 @@ textarea {
 .post-item {
   position: relative;
   margin-top: 10px;
-  padding: 30px 20px 10px 20px;
+  padding: 30px 20px 10px 20px
 }
 
-.post-button-holder {
+.show-details {
+  /* to showcase the line break use pre-line 
+  but to ensure all white spaces are accounted for, use pre-wrap*/
+  white-space: pre-wrap;
+  
+}
+
+.custom-dropwdown {
   position: absolute;
   top: 0;
   right:40px;
   transform: translate(50%, -50%);
+}
+
+.custom-dropwdown .dropdown-toggle::after {
+  content: none;
 }
