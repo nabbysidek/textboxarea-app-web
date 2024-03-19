@@ -11,7 +11,8 @@ function App() {
 
   const [post, setPost] = useState('');
   const [posts, setPosts] = useState([]);
-  const [showDropdown, setShowDropdown] = useState(false);
+  const [editPostId, setEditPostId] = useState(null);
+  const [editedPostContent, setEditedPostContent] = useState('');
 
   const fetchPosts = async () => {
     const result = await axios.get('http://localhost:8000/api/posts');
@@ -29,15 +30,32 @@ function App() {
     fetchPosts();
   };
 
-  const handleKeyPress =(e) => {
+  const handleEdit = (postId, postContent) => {
+    setEditPostId(postId);
+    setEditedPostContent(postContent);
+  }
+
+  const handleUpdate = async (e) => {
+    e.preventDefault();
+    await axios.put(`http://localhost:8000/api/posts/${editPostId}`, { post: editedPostContent });
+    setEditPostId(null);
+    fetchPosts();
+  };
+
+  const handleKeyPress = (e) => {
     if (e.key === 'Enter' && !e.shiftKey) {
       e.preventDefault(); // prevent form submission
       handleSubmit(e);
     }
   };
 
-  const toggleDropdown = () => {
-    setShowDropdown(!showDropdown);
+  const handleDelete = async (postId) => {
+    try {
+      await axios.delete(`http://localhost:8000/api/posts/${postId}`);
+      setPosts (posts.filter(post => post.id !== postId));
+    } catch (error) {
+      console.error('Error:', error);
+    }
   };
 
   return (
@@ -88,21 +106,29 @@ function App() {
         <div className="post-container">
           {posts.map((posts) => (
             <Card className="post-item" key={posts.id}>
-              <Dropdown show={showDropdown} onClick={toggleDropdown} className='custom-dropwdown'>
+              <Dropdown className='custom-dropwdown'>
                 <Dropdown.Toggle className="post-button-holder">
                   <FaEllipsisH />
                 </Dropdown.Toggle>
                 <Dropdown.Menu>
-                  <Dropdown.Item>Edit</Dropdown.Item>
-                  <Dropdown.Item>Delete</Dropdown.Item>
+                  <Dropdown.Item onClick={() => handleEdit(posts.id, posts.post)}>Edit</Dropdown.Item>
+                  <Dropdown.Item onClick={() => handleDelete(posts.id)}>Delete</Dropdown.Item>
                 </Dropdown.Menu>
               </Dropdown>
-              <ReactMarkdown
-                remarkPlugins={[remarkGfm]}
-                className="show-details"
-              >
+              {editPostId === posts.id ? (
+              <Form onSubmit={handleUpdate}>
+                <Form.Control
+                  as="textarea"
+                  value={editedPostContent}
+                  onChange={(e) => setEditedPostContent(e.target.value)}
+                />
+                <Button type="submit" className='save-button'>Update</Button>
+              </Form>
+            ) : (
+              <ReactMarkdown remarkPlugins={[remarkGfm]} className="show-details">
                 {posts.post}
               </ReactMarkdown>
+            )}
             </Card>
           ))}
         </div>

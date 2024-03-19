@@ -4,6 +4,11 @@
   padding: 2rem;
 }
 
+blockquote {
+  border-left: 4px solid #ccc; 
+  padding-left: 10px; 
+}
+
 .container {
   max-width: 600px;
 }
@@ -24,16 +29,6 @@
   text-align: center;
 }
 
-textarea {
-  resize: none;
-  /* overflow-y: hidden; */
-}
-
-blockquote {
-  border-left: 4px solid #ccc; 
-  padding-left: 10px; 
-}
-
 .alert-icons {
   background-color: lightgray;
   padding: 3px 5px 1px 5px;
@@ -49,7 +44,7 @@ blockquote {
 
 .post-item {
   position: relative;
-  margin-top: 10px;
+  margin-top: 45px;
   padding: 30px 20px 10px 20px
 }
 
@@ -60,13 +55,33 @@ blockquote {
   
 }
 
+.custom-dropwdown button {
+  background-color: #17a2b8;
+  border-color: #17a2b8;
+  --bs-btn-active-bg: #6610f2;
+  --bs-btn-active-border-color: #6610f2;
+}
+
+.custom-dropwdown button:hover {
+  background-color: #17a2b8;
+  border-color: #17a2b8;
+}
+
 .custom-dropwdown {
   position: absolute;
   top: 0;
   right:40px;
   transform: translate(50%, -50%);
+  z-index: 1;
 }
 
 .custom-dropwdown .dropdown-toggle::after {
   content: none;
+}
+
+.save-button {
+  margin-top: 10px;
+  display: block;
+  margin-left: auto;
+  margin-right: 0;
 }
